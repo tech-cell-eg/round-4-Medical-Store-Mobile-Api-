@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\UserAuthController;
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Auth Routes
+Route::controller(UserAuthController::class)->prefix("auth")->group(function () {
+    Route::post("send-otp", "sendOtp");
+    Route::post("verify-otp", "verifyOtp");
+});
