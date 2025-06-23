@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\UserProfile;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -14,46 +16,14 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = [
-            [
-                'name' => 'مدير النظام',
-                'email' => 'admin@example.com',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-                'remember_token' => Str::random(10),
-            ],
-            [
-                'name' => 'أحمد محمد',
-                'email' => 'ahmed@example.com',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-                'remember_token' => Str::random(10),
-            ],
-            [
-                'name' => 'سارة أحمد',
-                'email' => 'sara@example.com',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-                'remember_token' => Str::random(10),
-            ],
-            [
-                'name' => 'محمد علي',
-                'email' => 'mohamed@example.com',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-                'remember_token' => Str::random(10),
-            ],
-            [
-                'name' => 'نورا خالد',
-                'email' => 'nora@example.com',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-                'remember_token' => Str::random(10),
-            ],
-        ];
+        $user = User::create([
+            "phone" => "+201040729538",
+        ]);
 
-        foreach ($users as $user) {
-            User::create($user);
-        }
+        UserProfile::create([
+            'user_id' => $user->id,
+            'first_name' => 'Unknown',
+            'last_name' => 'Unknown',
+        ]);
     }
 }

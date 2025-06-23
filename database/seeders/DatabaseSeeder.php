@@ -12,14 +12,12 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
-        // تعطيل إنشاء المستخدمين العشوائيين
-        // User::factory(10)->create();
-        
+    {        
         // إنشاء البيانات الأولية
         $this->call([
             UsersTableSeeder::class,
             UnitsTableSeeder::class,
+            
         ]);
     }
 }
