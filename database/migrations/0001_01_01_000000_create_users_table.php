@@ -36,7 +36,7 @@ return new class extends Migration
             $table->char('code', 6);
             $table->boolean('is_used')->default(false);
             $table->dateTime('expires_at');
-            $table->timestamps(); 
+            $table->timestamps();
 
             $table->index('user_id');
         });
