@@ -13,11 +13,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // تعطيل إنشاء المستخدمين العشوائيين
         // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        
+        // إنشاء البيانات الأولية
+        $this->call([
+            UsersTableSeeder::class,
+            UnitsTableSeeder::class,
         ]);
     }
 }
