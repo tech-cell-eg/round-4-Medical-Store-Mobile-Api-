@@ -13,7 +13,10 @@
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
-        "tymon/jwt-auth": "^2.2"
+        "propaganistas/laravel-phone": "^6.0",
+        "twilio/sdk": "^8.2",
+        "tymon/jwt-auth": "*",
+        "vonage/client": "^4.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

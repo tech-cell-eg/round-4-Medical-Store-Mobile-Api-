@@ -3,8 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\UserProfile;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UsersTableSeeder extends Seeder
 {
@@ -13,28 +16,14 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        // إنشاء مستخدم مسؤول
-        User::create([
-            'first_name' => 'Admin',
-            'last_name' => 'User',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
-            'phone' => '1234567890',
-            'address' => '123 Main St',
-            'is_active' => true,
-            'role_id' => 1, // افتراضيًا، 1 هو معرف دور المسؤول
+        $user = User::create([
+            "phone" => "+201040729538",
         ]);
 
-        // إنشاء مستخدم عادي
-        User::create([
-            'first_name' => 'Normal',
-            'last_name' => 'User',
-            'email' => 'user@example.com',
-            'password' => Hash::make('password'),
-            'phone' => '0987654321',
-            'address' => '456 Side St',
-            'is_active' => true,
-            'role_id' => 2, // افتراضيًا، 2 هو معرف دور المستخدم العادي
+        UserProfile::create([
+            'user_id' => $user->id,
+            'first_name' => 'Unknown',
+            'last_name' => 'Unknown',
         ]);
     }
 }

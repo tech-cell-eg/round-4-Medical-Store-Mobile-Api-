@@ -12,10 +12,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // تشغيل Seeder للمستخدمين
+        $this->call([
+            CategorySeeder::class,
+            UnitSeeder::class,
+            BrandSeeder::class, // Added BrandSeeder
+            ProductSeeder::class,
+            PackageSeeder::class,
+        ]);
+        // إنشاء البيانات الأولية
         $this->call([
             UsersTableSeeder::class,
-            ProductsTableSeeder::class,
+            UnitsTableSeeder::class,
+
         ]);
     }
 }

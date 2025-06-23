@@ -3,29 +3,30 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Ingredient;
+use App\Models\Package;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
-class IngredientController extends Controller
+class PackageController extends Controller
 {
     /**
-     * عرض قائمة جميع المكونات
+     * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $ingredients = Ingredient::all();
+        $packages = Package::with('product')->get();
         return response()->json([
             'status' => 'success',
-            'data' => $ingredients
+            'data' => $packages
         ], Response::HTTP_OK);
     }
 
     /**
-     * تخزين مكون جديد في قاعدة البيانات
+     * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -33,8 +34,10 @@ class IngredientController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'product_id' => 'required|exists:products,id',
+            'size' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'sku' => 'nullable|string|max:255|unique:packages,sku',
         ]);
 
         if ($validator->fails()) {
@@ -45,59 +48,61 @@ class IngredientController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $ingredient = Ingredient::create($request->all());
+        $package = Package::create($request->all());
 
         return response()->json([
             'status' => 'success',
-            'message' => 'تم إنشاء المكون بنجاح',
-            'data' => $ingredient
+            'message' => 'تم إنشاء العبوة بنجاح',
+            'data' => $package
         ], Response::HTTP_CREATED);
     }
 
     /**
-     * عرض المكون المحدد
+     * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(string $id)
     {
-        $ingredient = Ingredient::find($id);
-
-        if (!$ingredient) {
+        $package = Package::with('product')->find($id);
+        
+        if (!$package) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'المكون غير موجود'
+                'message' => 'العبوة غير موجودة'
             ], Response::HTTP_NOT_FOUND);
         }
 
         return response()->json([
             'status' => 'success',
-            'data' => $ingredient
+            'data' => $package
         ], Response::HTTP_OK);
     }
 
     /**
-     * تحديث المكون المحدد في قاعدة البيانات
+     * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-        $ingredient = Ingredient::find($id);
-
-        if (!$ingredient) {
+        $package = Package::find($id);
+        
+        if (!$package) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'المكون غير موجود'
+                'message' => 'العبوة غير موجودة'
             ], Response::HTTP_NOT_FOUND);
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|required|string|max:255',
-            'description' => 'nullable|string',
+            'product_id' => 'sometimes|required|exists:products,id',
+            'size' => 'sometimes|required|string|max:255',
+            'price' => 'sometimes|required|numeric|min:0',
+            'sku' => 'sometimes|nullable|string|max:255|unique:packages,sku,' . $id,
         ]);
 
         if ($validator->fails()) {
@@ -108,37 +113,37 @@ class IngredientController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $ingredient->update($request->all());
+        $package->update($request->all());
 
         return response()->json([
             'status' => 'success',
-            'message' => 'تم تحديث المكون بنجاح',
-            'data' => $ingredient
+            'message' => 'تم تحديث العبوة بنجاح',
+            'data' => $package
         ], Response::HTTP_OK);
     }
 
     /**
-     * حذف المكون المحدد من قاعدة البيانات
+     * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        $ingredient = Ingredient::find($id);
-
-        if (!$ingredient) {
+        $package = Package::find($id);
+        
+        if (!$package) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'المكون غير موجود'
+                'message' => 'العبوة غير موجودة'
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $ingredient->delete();
+        $package->delete();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'تم حذف المكون بنجاح'
+            'message' => 'تم حذف العبوة بنجاح'
         ], Response::HTTP_OK);
     }
 }

@@ -7,182 +7,160 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
 use App\Models\Unit;
+use App\Http\Requests\Api\ProductRequest;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductCollection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
+/**
+ * @OA\Tag(
+ *     name="المنتجات",
+ *     description="إدارة المنتجات"
+ * )
+ */
 
 class ProductController extends Controller
 {
     /**
-     * عرض قائمة المنتجات
-     *
-     * @return \Illuminate\Http\Response
+     * عرض قائمة المنتجات مع إمكانية التصفية والبحث
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['category', 'brand', 'unit'])->get();
+        $perPage = $request->input('per_page', 15);
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $products
-        ]);
-    }
+        $query = Product::with(['category', 'brand', 'unit']);
 
-    /**
-     * تخزين منتج جديد في قاعدة البيانات
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        // التحقق من صحة البيانات
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0',
-            'barcode' => 'nullable|string|unique:products,barcode',
-            'is_active' => 'boolean',
-            'category_id' => 'required|exists:categories,id',
-            'brand_id' => 'nullable|exists:brands,id',
-            'unit_id' => 'required|exists:units,id',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 422);
+        // البحث بالاسم أو الوصف
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
         }
 
-        // إنشاء المنتج
-        $product = new Product();
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->price = $request->price;
-        $product->quantity = $request->quantity;
-        $product->barcode = $request->barcode ?? Str::random(13);
-        $product->is_active = $request->is_active ?? true;
-        $product->category_id = $request->category_id;
-        $product->brand_id = $request->brand_id;
-        $product->unit_id = $request->unit_id;
-        $product->created_by = 1;
-        $product->save();
+        // التصفية حسب الفئة
+        if ($categoryId = $request->input('category_id')) {
+            $query->where('category_id', $categoryId);
+        }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'تم إنشاء المنتج بنجاح',
-            'data' => $product->load(['category', 'brand', 'unit'])
-        ], 201);
+        // التصفية حسب الماركة
+        if ($brandId = $request->input('brand_id')) {
+            $query->where('brand_id', $brandId);
+        }
+
+        // التصفية حسب الحالة
+        if ($request->has('is_active')) {
+            $query->where('is_active', $request->boolean('is_active'));
+        }
+
+        // الترتيب
+        $query->latest();
+
+        $products = $query->paginate($perPage);
+
+        return new ProductCollection($products);
     }
 
     /**
      * عرض تفاصيل منتج محدد
-     *
-     * @param  string  $id
-     * @return \Illuminate\Http\Response
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $product = Product::with(['category', 'brand', 'unit'])->find($id);
 
         if (!$product) {
             return response()->json([
-                'status' => 'error',
                 'message' => 'المنتج غير موجود'
             ], 404);
         }
 
         return response()->json([
-            'status' => 'success',
-            'data' => $product
+            'data' => new ProductResource($product)
         ]);
     }
 
     /**
-     * تحديث المنتج المحدد في قاعدة البيانات
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $id
-     * @return \Illuminate\Http\Response
+     * إنشاء منتج جديد
      */
-    public function update(Request $request, string $id)
+    public function store(ProductRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+
+        // معالجة رفع الصورة
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+            $data['image'] = $imagePath;
+        }
+
+        // إنشاء المنتج
+        $product = Product::create($data);
+
+        return response()->json([
+            'message' => 'تم إنشاء المنتج بنجاح',
+            'data' => new ProductResource($product->load(['category', 'brand', 'unit']))
+        ], 201);
+    }
+
+    /**
+     * تحديث منتج محدد
+     */
+    public function update(ProductRequest $request, string $id): JsonResponse
     {
         $product = Product::find($id);
 
         if (!$product) {
             return response()->json([
-                'status' => 'error',
                 'message' => 'المنتج غير موجود'
             ], 404);
         }
 
-        // التحقق من صحة البيانات
-        $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'sometimes|required|numeric|min:0',
-            'quantity' => 'sometimes|required|integer|min:0',
-            'barcode' => 'nullable|string|unique:products,barcode,' . $id,
-            'is_active' => 'boolean',
-            'category_id' => 'sometimes|required|exists:categories,id',
-            'brand_id' => 'nullable|exists:brands,id',
-            'unit_id' => 'sometimes|required|exists:units,id',
-        ]);
+        $data = $request->validated();
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 422);
+        // معالجة تحديث الصورة إذا تم رفع صورة جديدة
+        if ($request->hasFile('image')) {
+            // حذف الصورة القديمة إذا كانت موجودة
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            $imagePath = $request->file('image')->store('products', 'public');
+            $data['image'] = $imagePath;
         }
 
-        // تحديث المنتج
-        $product->fill($request->only([
-            'name',
-            'description',
-            'price',
-            'quantity',
-            'barcode',
-            'is_active',
-            'category_id',
-            'brand_id',
-            'unit_id'
-        ]));
-        $product->updated_by = 1;
-        $product->save();
+        $product->update($data);
 
         return response()->json([
-            'status' => 'success',
             'message' => 'تم تحديث المنتج بنجاح',
-            'data' => $product->load(['category', 'brand', 'unit'])
+            'data' => new ProductResource($product->load(['category', 'brand', 'unit']))
         ]);
     }
 
     /**
-     * حذف المنتج المحدد من قاعدة البيانات
-     *
-     * @param  string  $id
-     * @return \Illuminate\Http\Response
+     * حذف منتج محدد
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $product = Product::find($id);
 
         if (!$product) {
             return response()->json([
-                'status' => 'error',
                 'message' => 'المنتج غير موجود'
             ], 404);
+        }
+
+        // حذف الصورة إذا كانت موجودة
+        if ($product->image) {
+            Storage::disk('public')->delete($product->image);
         }
 
         $product->delete();
 
         return response()->json([
-            'status' => 'success',
             'message' => 'تم حذف المنتج بنجاح'
         ]);
     }

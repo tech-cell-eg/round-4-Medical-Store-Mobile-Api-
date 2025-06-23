@@ -3,84 +3,97 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Category;
-use App\Models\Brand;
-use App\Models\Unit;
-use App\Models\User;
+use App\Models\Package;
+use App\Models\Ingredient;
+use App\Models\Review;
 
 class Product extends Model
 {
-    use SoftDeletes;
-    
-    /**
-     * الحقول التي يمكن تعبئتها
-     *
-     * @var array
-     */
+    //
+
+    protected $table = 'products';
     protected $fillable = [
         'name',
         'description',
-        'price',
-        'quantity',
-        'barcode',
-        'image',
-        'is_active',
+        'production_date',
+        'expiry_date',
         'category_id',
-        'brand_id',
         'unit_id',
-        'created_by',
-        'updated_by'
+        'image_url',
+        'is_active',
     ];
-    
+    public $timestamps = true;
+
     /**
-     * الحقول التي يجب تحويلها إلى أنواع محددة
-     *
-     * @var array
+     * العلاقة مع وحدة القياس (علاقة متعدد - واحد)
+     * Many-to-One relationship with Unit
      */
-    protected $casts = [
-        'price' => 'decimal:2',
-        'quantity' => 'integer',
-        'is_active' => 'boolean',
-    ];
-    
-    /**
-     * العلاقة مع التصنيف
-     */
-    public function category()
+    public function unit()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Unit::class, 'unit_id');
     }
-    
+
+
+
     /**
-     * العلاقة مع الماركة
+     * العلاقة مع العلامات التجارية (علاقة متعدد - واحد)
+     * One-to-Many relationship with Brand
      */
     public function brand()
     {
         return $this->belongsTo(Brand::class);
     }
-    
+
     /**
-     * العلاقة مع وحدة القياس
+     * العلاقة مع التصنيفات (علاقة متعدد - متعدد)
+     * Many-to-Many relationship with Category
      */
-    public function unit()
+    public function category()
     {
-        return $this->belongsTo(Unit::class);
+        return $this->belongsTo(Category::class);
     }
-    
+
     /**
-     * المستخدم الذي أنشأ المنتج
+     * العلاقة مع العبوات (علاقة واحد - متعدد)
+     * One-to-Many relationship with Package
      */
-    public function creator()
+    public function packages()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->hasMany(Package::class);
     }
-    
+
     /**
-     * آخر مستخدم قام بتحديث المنتج
+     * العلاقة مع المكونات (علاقة متعدد - متعدد)
+     * Many-to-Many relationship with Ingredient
      */
-    public function updater()
+    public function ingredients()
     {
-        return $this->belongsTo(User::class, 'updated_by');
+        return $this->belongsToMany(Ingredient::class);
+    }
+
+    /**
+     * العلاقة مع التقييمات (علاقة متعدد - متعدد)
+     * Many-to-Many relationship with Review
+     */
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    /**
+     * الحصول على متوسط تقييم المنتج 
+     * عن طريق حساب المتوسطات من كل التقييمات حيب القيمة النسبية لكل تقييم
+     */
+    public function getAverageRatingAttribute()
+    {
+        return $this->reviews()->avg('rating') ?: 0;
+    }
+
+    /**
+     * الحصول على عدد المرات التى قام المستخدمين فيها باضافة تقييمات للمنتج 
+     */
+    public function getReviewsCountAttribute()
+    {
+        return $this->reviews()->count();
     }
 }

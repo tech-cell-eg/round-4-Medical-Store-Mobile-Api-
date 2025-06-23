@@ -13,18 +13,24 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('phone', 20)->unique();
+            $table->boolean('is_verified')->default(false);
             $table->timestamps();
         });
 
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
+        Schema::create('otps', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained()
+                ->cascadeOnDelete();
+            $table->string('phone', 20);
+            $table->char('code', 6);
+            $table->boolean('is_used')->default(false);
+            $table->dateTime('expires_at');
+            $table->timestamps();
+
+            $table->index('user_id');
         });
 
         Schema::create('sessions', function (Blueprint $table) {
@@ -43,7 +49,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('otps');
         Schema::dropIfExists('sessions');
     }
 };
