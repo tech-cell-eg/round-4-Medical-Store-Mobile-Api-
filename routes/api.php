@@ -5,7 +5,6 @@ use App\Http\Controllers\UserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-<<<<<<< HEAD
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -45,22 +44,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('reviews/{review}', [\App\Http\Controllers\Api\ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
 
-/*
-"name": "AVOBAN",
-        "description": "AVOBAN, AVOBAN Ointment is indicated for bacterial skinnfections",
-        "production_date": "05-05-2024",
-        "expiry_date": "20-12-2026",
-        "brand_id": 1,
-        "category_id": 1,
-        "unit_id": 1,
-        "image_url":"",
-        "created_by":1,
-        "updated_by":1
-        */
-=======
+
+
+
 // Auth Routes
 Route::controller(UserAuthController::class)->prefix("auth")->group(function () {
     Route::post("send-otp", "sendOtp");
     Route::post("verify-otp", "verifyOtp");
 });
->>>>>>> b2c02a82f4161f389c2d46ca2c0a9ad205bfb5fa
