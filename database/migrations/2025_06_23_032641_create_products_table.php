@@ -17,8 +17,11 @@ return new class extends Migration
             $table->text('description');
             $table->date('production_date');
             $table->date('expiry_date');
-            $table->foreignId('brand_id')->constrained()->onDelete('cascade');
-            $table->foreignId('category_id')->nullable()->constrained()->onDelete('set null');
+            $table->boolean('is_active')->default(true);
+            $table->foreignId('brand_id')->nullable()->constrained('brands')->onDelete('set null');
+            $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
+            $table->foreignId('unit_id')->nullable()->constrained('units')->onDelete('set null');
+            $table->foreignId('package_id')->nullable()->constrained('packages')->onDelete('set null');
             $table->string('image_url')->nullable();
             $table->timestamps();
         });

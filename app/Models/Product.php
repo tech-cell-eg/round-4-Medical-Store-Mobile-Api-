@@ -17,12 +17,10 @@ class Product extends Model
         'description',
         'production_date',
         'expiry_date',
-        'brand_id',
         'category_id',
         'unit_id',
         'image_url',
-        'created_by',
-        'updated_by',
+        'is_active',
     ];
     public $timestamps = true;
 
@@ -35,14 +33,7 @@ class Product extends Model
         return $this->belongsTo(Unit::class, 'unit_id');
     }
 
-    /**
-     * الحصول على جميع المنتجات التي تستخدم هذه الوحدة
-     * Get all products that use this unit
-     */
-    public function products()
-    {
-        return $this->hasMany(Product::class, 'unit_id');
-    }
+
 
     /**
      * العلاقة مع العلامات التجارية (علاقة متعدد - واحد)

@@ -38,6 +38,9 @@ Route::apiResource('units', \App\Http\Controllers\Api\UnitController::class);
 // مسارات التقييمات (Reviews)
 Route::apiResource('reviews', \App\Http\Controllers\Api\ReviewController::class);
 
+// مسارات التصنيفات (Categories)
+Route::apiResource('categories', \App\Http\Controllers\Api\CategoryController::class);
+
 // مسارات وحدات القياس (Units)
 Route::apiResource('units', \App\Http\Controllers\Api\UnitController::class);
 

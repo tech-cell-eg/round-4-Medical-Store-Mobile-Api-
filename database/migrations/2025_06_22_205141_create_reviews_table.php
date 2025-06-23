@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->integer('rating')->unsigned()->between(1, 5);
+            $table->tinyInteger('rating')->unsigned(); // Validation for 1-5 will be in the model/controller
             $table->text('comment')->nullable();
             $table->string('reviewer_name')->nullable();
             $table->date('review_date');

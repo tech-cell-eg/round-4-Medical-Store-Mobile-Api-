@@ -58,37 +58,30 @@ class UnitController extends Controller
             ], 422);
         }
 
-        // إضافة المستخدم الحالي كمنشئ للوحدات
-        $userId = Auth::id();
         $units = [];
-        
         try {
             // بدء معاملة قاعدة البيانات
             DB::beginTransaction();
-            
+
             if ($isMultiple) {
                 // معالجة إدراج متعدد
                 foreach ($data as $unitData) {
-                    $unitData['created_by'] = $userId;
-                    $unitData['updated_by'] = $userId;
                     $units[] = Unit::create($unitData);
                 }
                 $message = 'تم إنشاء الوحدات بنجاح';
             } else {
                 // معالجة إدراج وحدة واحدة
-                $data['created_by'] = $userId;
-                $data['updated_by'] = $userId;
                 $units[] = Unit::create($data);
                 $message = 'تم إنشاء الوحدة بنجاح';
             }
-            
+
             DB::commit();
-            
+
             return response()->json([
                 'message' => $message,
                 'data' => $units
             ], 201);
-            
+
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
