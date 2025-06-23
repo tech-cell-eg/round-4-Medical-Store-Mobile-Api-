@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\StockController;
+use App\Http\Controllers\Api\UnitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,13 @@ Route::prefix('products')->group(function () {
     Route::get('/{id}', [ProductController::class, 'show']);
     Route::put('/{id}', [ProductController::class, 'update']);
     Route::delete('/{id}', [ProductController::class, 'destroy']);
+});
+Route::prefix('units')->group(function () {
+    Route::get('/', [UnitController::class, 'index']);
+    Route::post('/', [UnitController::class, 'store']);
+    Route::get('/{id}', [UnitController::class, 'show']);
+    Route::put('/{id}', [UnitController::class, 'update']);
+    Route::delete('/{id}', [UnitController::class, 'destroy']);
 });
 
 Route::apiResource('reviews', ReviewController::class);
