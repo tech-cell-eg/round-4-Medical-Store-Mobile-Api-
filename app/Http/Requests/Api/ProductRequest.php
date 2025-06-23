@@ -23,14 +23,14 @@ class ProductRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'production_date' => 'required|date',
-            'expiry_date' => 'required|date|after:production_date',
-            'brand_id' => 'required|exists:brands,id',
-            'category_id' => 'required|exists:categories,id',
-            'unit_id' => 'required|exists:units,id',
-            'is_active' => 'sometimes|boolean',
+            'name'              => 'required|string|max:255',
+            'description'       => 'nullable|string',
+            'production_date'   => 'required|date',
+            'expiry_date'       => 'required|date|after:production_date',
+            'brand_id'          => 'required|exists:brands,id',
+            'category_id'       => 'required|exists:categories,id',
+            'unit_id'           => 'required|exists:units,id',
+            'is_active'         => 'sometimes|boolean',
         ];
 
         // إضافة قواعد خاصة بالصورة إذا كانت موجودة

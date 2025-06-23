@@ -15,8 +15,6 @@ class Unit extends Model
         'symbol',
         'description',
         'is_active',
-        'created_by',
-        'updated_by',
     ];
     protected $casts = [
         'is_active' => 'boolean'
