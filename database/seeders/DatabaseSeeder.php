@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             UnitSeeder::class,
             BrandSeeder::class, // Added BrandSeeder
+            IngredientSeeder::class, // إضافة IngredientSeeder
             ProductSeeder::class,
             PackageSeeder::class,
         ]);

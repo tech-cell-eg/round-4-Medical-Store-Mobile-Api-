@@ -71,7 +71,14 @@ class ProductController extends Controller
      */
     public function show(string $id): JsonResponse
     {
-        $product = Product::with(['category', 'brand', 'unit'])->find($id);
+        $product = Product::with([
+            'category',
+            'brand',
+            'unit',
+            'packages',
+            'ingredients',
+            'reviews'
+        ])->find($id);
 
         if (!$product) {
             return response()->json([
