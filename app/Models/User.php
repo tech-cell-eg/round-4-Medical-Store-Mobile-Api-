@@ -20,7 +20,26 @@ class User extends Authenticatable
     ];
 
 
+<<<<<<< HEAD
+    /**
+     * الحصول على تحديثات المخزون التي قام بها هذا المستخدم
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function stockUpdates()
+    {
+        return $this->hasMany(Stock::class, 'last_updated_by');
+    }
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+=======
     public function otps()
+>>>>>>> b2c02a82f4161f389c2d46ca2c0a9ad205bfb5fa
     {
         return $this->hasMany(Otp::class);
     }
