@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Unit;
 use App\Models\Brand;
+use App\Models\Ingredient;
 use Carbon\Carbon;
 
 class ProductSeeder extends Seeder
@@ -29,7 +30,10 @@ class ProductSeeder extends Seeder
 
         $gskBrand = Brand::where('name', 'GSK')->first();
         $bayerBrand = Brand::where('name', 'Bayer')->first();
-        $genericBrand = Brand::where('name', 'Generic')->first();
+                $genericBrand = Brand::where('name', 'Generic')->first();
+
+        // Get all ingredients
+        $ingredients = Ingredient::all();
 
         // Define products data
         $products = [
@@ -66,7 +70,7 @@ class ProductSeeder extends Seeder
         foreach ($products as $productData) {
             // Ensure all required relations are loaded
             if ($productData['category'] && $productData['unit'] && $productData['brand']) {
-                Product::firstOrCreate(
+                                $product = Product::firstOrCreate(
                     ['name' => $productData['name']],
                     [
                         'description' => $productData['description'],
@@ -79,6 +83,13 @@ class ProductSeeder extends Seeder
                         'image_url' => 'images/products/' . strtolower(str_replace(' ', '_', $productData['name'])) . '.jpg',
                     ]
                 );
+
+                // Attach random ingredients to the product
+                if ($ingredients->count() > 0) {
+                    $product->ingredients()->attach(
+                        $ingredients->random(rand(1, min(3, $ingredients->count())))->pluck('id')->toArray()
+                    );
+                }
             }
         }
     }
