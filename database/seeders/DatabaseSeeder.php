@@ -19,5 +19,11 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             PackageSeeder::class,
         ]);
+        // إنشاء البيانات الأولية
+        $this->call([
+            UsersTableSeeder::class,
+            UnitsTableSeeder::class,
+
+        ]);
     }
 }
