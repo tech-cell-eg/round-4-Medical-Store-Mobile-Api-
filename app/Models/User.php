@@ -6,33 +6,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
+    protected $guarded = [
+        'id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
 
+<<<<<<< HEAD
     /**
      * الحصول على تحديثات المخزون التي قام بها هذا المستخدم
      *
@@ -49,10 +37,22 @@ class User extends Authenticatable
      * @return array<string, string>
      */
     protected function casts(): array
+=======
+    public function otps()
+>>>>>>> b2c02a82f4161f389c2d46ca2c0a9ad205bfb5fa
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(Otp::class);
+    }
+
+
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
+
+    public function markPhoneAsVerified()
+    {
+        $this->update(['is_verified' => now()]);
     }
 }
