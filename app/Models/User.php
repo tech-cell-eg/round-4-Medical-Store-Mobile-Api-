@@ -34,6 +34,16 @@ class User extends Authenticatable
     ];
 
     /**
+     * الحصول على تحديثات المخزون التي قام بها هذا المستخدم
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function stockUpdates()
+    {
+        return $this->hasMany(Stock::class, 'last_updated_by');
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
