@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\IngredientController;
+use App\Http\Controllers\Api\StockController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,25 +23,14 @@ use App\Http\Controllers\Api\ProductController;
 // });
 
 // مسارات المنتجات (محمية بالمصادقة)
-Route::middleware(['jwt.auth'])->group(function () {
-    Route::prefix('products')->group(function () {
-        Route::get('/', [ProductController::class, 'index']);
-        Route::post('/', [ProductController::class, 'store']);
-        Route::get('/{id}', [ProductController::class, 'show']);
-        Route::put('/{id}', [ProductController::class, 'update']);
-        Route::delete('/{id}', [ProductController::class, 'destroy']);
-    });
+Route::prefix('products')->group(function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::post('/', [ProductController::class, 'store']);
+    Route::get('/{id}', [ProductController::class, 'show']);
+    Route::put('/{id}', [ProductController::class, 'update']);
+    Route::delete('/{id}', [ProductController::class, 'destroy']);
 });
 
-// مسارات المصادقة
-Route::prefix('auth')->group(function () {
-    Route::post('/login', 'App\Http\Controllers\Api\AuthController@login');
-    Route::post('/register', 'App\Http\Controllers\Api\AuthController@register');
-    
-    // المسارات المحمية بالمصادقة
-    Route::middleware(['jwt.auth'])->group(function () {
-        Route::post('/logout', 'App\Http\Controllers\Api\AuthController@logout');
-        Route::post('/refresh', 'App\Http\Controllers\Api\AuthController@refresh');
-        Route::get('/user', 'App\Http\Controllers\Api\AuthController@user');
-    });
-});
+Route::apiResource('reviews', ReviewController::class);
+Route::apiResource('ingredients', IngredientController::class);
+Route::apiResource('stocks', StockController::class);
