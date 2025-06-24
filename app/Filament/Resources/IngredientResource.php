@@ -31,7 +31,18 @@ class IngredientResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->label('اسم المادة الفعالة')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->label('الوصف')
+                    ->limit(40),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('تاريخ الإضافة')
+                    ->date('Y-m-d'),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('تاريخ التعديل')
+                    ->date('Y-m-d'),
             ])
             ->filters([
                 //

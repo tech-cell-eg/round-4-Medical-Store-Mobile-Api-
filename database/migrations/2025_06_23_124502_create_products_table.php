@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('barcode')->unique()->nullable();
             $table->string('image')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->date('production_date')->nullable();
+            $table->date('expiry_date')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('brand_id')->nullable();
             $table->unsignedBigInteger('unit_id')->nullable();
@@ -27,7 +29,7 @@ return new class extends Migration
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             // Foreign keys
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
             $table->foreign('brand_id')->references('id')->on('brands')->onDelete('set null');
@@ -49,7 +51,7 @@ return new class extends Migration
             $table->dropForeign(['created_by']);
             $table->dropForeign(['updated_by']);
         });
-        
+
         Schema::dropIfExists('products');
     }
 };

@@ -20,33 +20,35 @@ class ProductsTableSeeder extends Seeder
     {
         // حذف البيانات الموجودة مسبقاً
         Product::truncate();
-        
+
         // إنشاء مثيل Faker
         $faker = Faker::create('ar_SA');
-        
+
         // الحصول على أول مستخدم (للاستخدام في created_by و updated_by)
         $user = User::first();
-        
+
         // الحصول على فئة افتراضية أو إنشائها
         $category = Category::firstOrCreate(
             ['name' => 'أدوية'],
             [
                 'description' => 'أدوية متنوعة',
                 'is_active' => true,
-                'created_by' => $user ? $user->id : null
+                'slug' => 'أدوية',
+                'parent_id' => null,
             ]
         );
-        
+
         // الحصول على علامة تجارية افتراضية أو إنشائها
         $brand = Brand::firstOrCreate(
-            ['name' => 'الشركة الوطنية للأدوية'],
             [
+                'name' => 'الشركة الوطنية للأدوية',
                 'description' => 'واحدة من أكبر شركات الأدوية في المملكة',
+                'slug' => 'NMCo',
                 'is_active' => true,
                 'created_by' => $user ? $user->id : null
             ]
         );
-        
+
         // الحصول على وحدة قياس افتراضية أو إنشائها
         $unit = Unit::firstOrCreate(
             ['name' => 'علبة'],
@@ -57,7 +59,7 @@ class ProductsTableSeeder extends Seeder
                 'created_by' => $user ? $user->id : null
             ]
         );
-        
+
         // بيانات المنتجات التجريبية
         $products = [
             [
@@ -121,7 +123,7 @@ class ProductsTableSeeder extends Seeder
                 'created_by' => $user ? $user->id : null,
             ]
         ];
-        
+
         // إضافة المنتجات إلى قاعدة البيانات
         foreach ($products as $productData) {
             Product::create($productData);

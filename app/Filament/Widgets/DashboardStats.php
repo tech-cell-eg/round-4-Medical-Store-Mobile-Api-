@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\Unit; // إضافة الموديل للوحدات
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -35,6 +36,11 @@ class DashboardStats extends BaseWidget
                 ->description('إجمالي عدد العلامات التجارية')
                 ->icon('heroicon-o-building-storefront')
                 ->color('info'),
+
+            Stat::make('الوحدات', Unit::count())
+                ->description('إجمالي عدد الوحدات')
+                ->icon('heroicon-o-cube')
+                ->color('secondary'),
         ];
     }
 }

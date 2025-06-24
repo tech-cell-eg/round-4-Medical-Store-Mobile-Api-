@@ -13,10 +13,10 @@ class BrandSeeder extends Seeder
      */
     public function run(): void
     {
-        Brand::firstOrCreate(['name' => 'GSK'], ['description' => 'GlaxoSmithKline']);
-        Brand::firstOrCreate(['name' => 'Pfizer'], ['description' => 'Pfizer Inc.']);
-        Brand::firstOrCreate(['name' => 'Bayer'], ['description' => 'Bayer AG']);
-        Brand::firstOrCreate(['name' => 'Novartis'], ['description' => 'Novartis AG']);
-        Brand::firstOrCreate(['name' => 'Generic'], ['description' => 'Generic Manufacturer']);
+        Brand::firstOrCreate(['name' => 'GSK'], ['description' => 'GlaxoSmithKline', 'slug' => 'gsk']);
+        Brand::firstOrCreate(['name' => 'Pfizer'], ['description' => 'Pfizer Inc.', 'slug' => 'pfizer']);
+        Brand::firstOrCreate(['name' => 'Bayer'], ['description' => 'Bayer AG', 'slug' => 'bayer']);
+        Brand::firstOrCreate(['name' => 'Novartis'], ['description' => 'Novartis AG', 'slug' => 'novartis']);
+        Brand::firstOrCreate(['name' => 'Generic'], ['description' => 'Generic Manufacturer', 'slug' => 'generic']);
     }
 }

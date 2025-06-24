@@ -139,6 +139,26 @@ class ProductResource extends Resource
                     
                 ToggleColumn::make('is_active')
                     ->label('نشط'),
+
+                TextColumn::make('unit.name')
+                    ->label('الوحدة')
+                    ->searchable(),
+
+                TextColumn::make('quantity')
+                    ->label('الكمية')
+                    ->sortable(),
+
+                TextColumn::make('barcode')
+                    ->label('الباركود'),
+
+                TextColumn::make('price')
+                    ->label('السعر')
+                    ->money('EGP'),
+
+                TextColumn::make('ingredients')
+                    ->label('المكونات')
+                    ->formatStateUsing(fn($state, $record) => $record->ingredients->pluck('name')->implode(', ')),
+
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('category')

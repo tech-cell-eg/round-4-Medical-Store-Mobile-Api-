@@ -13,10 +13,16 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        Category::firstOrCreate(['name' => 'Painkillers', 'description' => 'Medications used to relieve pain.']);
-        Category::firstOrCreate(['name' => 'Skin Care', 'description' => 'Products for skin health and treatment.']);
-        Category::firstOrCreate(['name' => 'Antibiotics', 'description' => 'Drugs that fight bacterial infections.']);
-        Category::firstOrCreate(['name' => 'Vitamins', 'description' => 'Supplements for nutritional support.']);
-        Category::firstOrCreate(['name' => 'Digestive Health', 'description' => 'Products for gastrointestinal issues.']);
+        $categories = [
+            ['name' => 'Painkillers', 'description' => 'Medications used to relieve pain.', 'slug' => 'painkillers', 'is_active' => true],
+            ['name' => 'Skin Care', 'description' => 'Products for skin health and treatment.', 'slug' => 'skin-care', 'is_active' => true],
+            ['name' => 'Antibiotics', 'description' => 'Drugs that fight bacterial infections.', 'slug' => 'antibiotics', 'is_active' => true],
+            ['name' => 'Vitamins', 'description' => 'Supplements for nutritional support.', 'slug' => 'vitamins', 'is_active' => true],
+            ['name' => 'Digestive Health', 'description' => 'Products for gastrointestinal issues.', 'slug' => 'digestive-health', 'is_active' => true],
+        ];
+
+        foreach ($categories as $category) {
+            Category::firstOrCreate($category);
+        }
     }
 }

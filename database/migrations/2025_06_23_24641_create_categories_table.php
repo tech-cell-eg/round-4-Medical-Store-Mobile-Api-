@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('categories');
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -23,7 +24,7 @@ return new class extends Migration
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             // Foreign keys
             $table->foreign('parent_id')->references('id')->on('categories')->onDelete('set null');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
@@ -41,7 +42,7 @@ return new class extends Migration
             $table->dropForeign(['created_by']);
             $table->dropForeign(['updated_by']);
         });
-        
+
         Schema::dropIfExists('categories');
     }
 };
