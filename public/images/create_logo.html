@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء لوجو متجر الأدوية الطبية</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .logo-container {
+            width: 300px;
+            height: 80px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #2c3e50;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            margin-left: 15px;
+        }
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .logo-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0;
+        }
+        .logo-subtitle {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin: 0;
+        }
+        .favicon {
+            width: 32px;
+            height: 32px;
+            background-color: #2c3e50;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #download-favicon {
+            background-color: #27ae60;
+        }
+        #download-favicon:hover {
+            background-color: #219653;
+        }
+    </style>
+</head>
+<body>
+    <h2>لوجو متجر الأدوية الطبية</h2>
+    
+    <div class="logo-container" id="logo">
+        <div class="logo-icon">MS</div>
+        <div class="logo-text">
+            <p class="logo-title">متجر الأدوية الطبية</p>
+            <p class="logo-subtitle">Medical Store</p>
+        </div>
+    </div>
+    
+    <h3>أيقونة المفضلة (Favicon)</h3>
+    <div class="favicon" id="favicon">MS</div>
+    
+    <div class="buttons">
+        <button id="download-logo">تحميل اللوجو</button>
+        <button id="download-favicon">تحميل الأيقونة</button>
+    </div>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        document.getElementById('download-logo').addEventListener('click', function() {
+            html2canvas(document.getElementById('logo')).then(function(canvas) {
+                const link = document.createElement('a');
+                link.download = 'logo.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        });
+
+        document.getElementById('download-favicon').addEventListener('click', function() {
+            html2canvas(document.getElementById('favicon')).then(function(canvas) {
+                const link = document.createElement('a');
+                link.download = 'favicon.ico';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        });
+    </script>
+</body>
+</html>
