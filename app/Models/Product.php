@@ -54,7 +54,18 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+
     // تم إزالة العلاقة مع العبوات بناءً على طلب مالك المنتج
+
+    /**
+     * العلاقة مع العبوات (علاقة واحد - متعدد)
+     * One-to-Many relationship with Package
+     */
+    // public function packages()
+    // {
+    //     return $this->hasMany(Package::class);
+    // }
+
 
     /**
      * العلاقة مع المكونات (علاقة متعدد - متعدد)

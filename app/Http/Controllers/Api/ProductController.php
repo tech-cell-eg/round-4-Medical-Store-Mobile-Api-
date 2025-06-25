@@ -83,7 +83,6 @@ class ProductController extends Controller
             'category',
             'brand',
             'unit',
-            'packages',
             'ingredients',
             'reviews'
         ])->find($id);
