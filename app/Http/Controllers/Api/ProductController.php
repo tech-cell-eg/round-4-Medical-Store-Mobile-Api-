@@ -33,7 +33,14 @@ class ProductController extends Controller
     {
         $perPage = $request->input('per_page', 15);
 
-        $query = Product::with(['category', 'brand', 'unit']);
+        $query = Product::with([
+            'category',
+            'brand',
+            'unit',
+            'packages',
+            'ingredients',
+            'reviews'
+        ]);
 
         // البحث بالاسم أو الوصف
         if ($search = $request->input('search')) {
@@ -98,6 +105,7 @@ class ProductController extends Controller
     {
         $data = $request->validated();
 
+        return $data;
         // معالجة رفع الصورة
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');

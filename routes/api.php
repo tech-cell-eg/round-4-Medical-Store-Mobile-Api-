@@ -6,6 +6,11 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\NotificationManagementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\IngredientController;
+use App\Http\Controllers\Api\StockController;
+use App\Http\Controllers\Api\UnitController;
 
 /*
 |--------------------------------------------------------------------------

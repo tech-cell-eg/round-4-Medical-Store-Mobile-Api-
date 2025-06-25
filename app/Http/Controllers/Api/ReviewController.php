@@ -81,7 +81,7 @@ class ReviewController extends Controller
         $reviewData = $request->all();
         $reviewData['product_id'] = $productId;
         $reviewData['user_id'] = Auth::id();
-        
+
         // إذا لم يتم إدخال اسم المراجع، استخدم اسم المستخدم الحالي
         if (empty($reviewData['reviewer_name']) && Auth::check()) {
             $reviewData['reviewer_name'] = Auth::user()->name;
@@ -110,7 +110,7 @@ class ReviewController extends Controller
     public function show($id)
     {
         $review = Review::with(['user', 'product'])->find($id);
-        
+
         if (!$review) {
             return response()->json([
                 'status' => 'error',
@@ -134,7 +134,7 @@ class ReviewController extends Controller
     public function update(Request $request, $id)
     {
         $review = Review::find($id);
-        
+
         if (!$review) {
             return response()->json([
                 'status' => 'error',
@@ -189,7 +189,7 @@ class ReviewController extends Controller
     public function destroy($id)
     {
         $review = Review::find($id);
-        
+
         if (!$review) {
             return response()->json([
                 'status' => 'error',

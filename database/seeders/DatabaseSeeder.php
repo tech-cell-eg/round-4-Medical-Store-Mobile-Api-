@@ -13,18 +13,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            AdminSeeder::class,
+            UsersTableSeeder::class,
             CategorySeeder::class,
-            UnitSeeder::class,
+            UnitsTableSeeder::class,
             BrandSeeder::class, // Added BrandSeeder
             IngredientSeeder::class, // إضافة IngredientSeeder
-            ProductSeeder::class,
+            ProductsTableSeeder::class,
             PackageSeeder::class,
-        ]);
-        // إنشاء البيانات الأولية
-        $this->call([
-            UsersTableSeeder::class,
-            UnitsTableSeeder::class,
-
+            ReviewsTableSeeder::class,
         ]);
     }
 }

@@ -10,10 +10,12 @@ class Ingredient extends Model
 {
     use HasFactory;
 
+    protected $table = 'ingredients';
     protected $fillable = [
         'name',
         'description'
     ];
+    public $timestamps = true;
 
     /**
      * العلاقة مع المنتجات (علاقة العديد للعديد)

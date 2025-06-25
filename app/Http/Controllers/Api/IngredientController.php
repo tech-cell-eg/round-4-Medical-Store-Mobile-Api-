@@ -63,7 +63,7 @@ class IngredientController extends Controller
     public function show($id)
     {
         $ingredient = Ingredient::find($id);
-        
+
         if (!$ingredient) {
             return response()->json([
                 'status' => 'error',
@@ -87,7 +87,7 @@ class IngredientController extends Controller
     public function update(Request $request, $id)
     {
         $ingredient = Ingredient::find($id);
-        
+
         if (!$ingredient) {
             return response()->json([
                 'status' => 'error',
@@ -126,7 +126,7 @@ class IngredientController extends Controller
     public function destroy($id)
     {
         $ingredient = Ingredient::find($id);
-        
+
         if (!$ingredient) {
             return response()->json([
                 'status' => 'error',
