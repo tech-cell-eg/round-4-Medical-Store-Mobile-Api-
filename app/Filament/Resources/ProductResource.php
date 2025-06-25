@@ -16,14 +16,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ViewField;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Illuminate\Support\Facades\Storage;
 
 class ProductResource extends Resource
 {
@@ -86,10 +87,27 @@ class ProductResource extends Resource
                             ->label('تاريخ انتهاء الصلاحية')
                             ->required(),
                         
-                        FileUpload::make('image_url')
+                        // عرض الصورة الحالية إذا كانت موجودة
+                        ViewField::make('current_image')
+                            ->label('الصورة الحالية')
+                            ->view('components.current-logo', [
+                                'url' => fn ($record) => $record && $record->image_url ? url('storage/' . $record->image_url) : null,
+                                'filename' => fn ($record) => $record && $record->image_url ? basename($record->image_url) : null,
+                            ])
+                            ->visible(fn ($record) => $record && $record->image_url)
+                            ->columnSpanFull(),
+                        
+                        // مكون رفع الملف المخصص
+                        ViewField::make('image_upload')
                             ->label('صورة المنتج')
-                            ->image()
-                            ->directory('products')
+                            ->view('components.file-upload-field', [
+                                'name' => 'image_url',
+                                'label' => 'صورة المنتج',
+                                'accept' => 'image/*',
+                                'maxSize' => 2048,
+                                'required' => false,
+                                'helpText' => 'يجب أن تكون الصورة بصيغة JPG أو PNG أو WEBP بحجم أقصى 2 ميجابايت',
+                            ])
                             ->columnSpanFull(),
                         
                         Toggle::make('is_active')
@@ -113,7 +131,8 @@ class ProductResource extends Resource
             ->columns([
                 ImageColumn::make('image_url')
                     ->label('الصورة')
-                    ->circular(),
+                    ->circular()
+                    ->disk('public'),
                     
                 TextColumn::make('name')
                     ->label('اسم المنتج')

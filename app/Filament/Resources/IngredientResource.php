@@ -12,18 +12,37 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
 
 class IngredientResource extends Resource
 {
     protected static ?string $model = Ingredient::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-beaker';
+    
+    protected static ?string $navigationGroup = 'المنتجات والمخزون';
+    
+    protected static ?string $navigationLabel = 'المكونات الفعالة';
+    
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Section::make('معلومات المكون الفعال')
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('اسم المكون الفعال')
+                            ->required()
+                            ->maxLength(255),
+                            
+                        Textarea::make('description')
+                            ->label('وصف المكون الفعال')
+                            ->required()
+                            ->columnSpanFull(),
+                    ])->columns(1)
             ]);
     }
 
