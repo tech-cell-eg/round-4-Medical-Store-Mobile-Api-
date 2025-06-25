@@ -53,6 +53,13 @@ class ProductResource extends Resource
                             ->required()
                             ->columnSpanFull(),
                         
+                        TextInput::make('price')
+                            ->label('السعر')
+                            ->numeric()
+                            ->required()
+                            ->minValue(0)
+                            ->columnSpanFull(),
+                        
                         Select::make('category_id')
                             ->label('الفئة')
                             ->relationship('category', 'name')

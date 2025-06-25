@@ -12,15 +12,17 @@ class Package extends Model
     protected $table = 'packages';
 
     protected $fillable = [
+        'name',
+        'quantity',
         'product_id',
         'size',
         'price',
         'sku',
+        'barcode',
         'created_by',
         'updated_by',
-        'barcode',
     ];
-    
+
     /**
      * الحصول على سجل المخزون الخاص بهذه العبوة
      *

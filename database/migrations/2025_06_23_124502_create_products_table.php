@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->integer('quantity')->default(0);
             $table->string('barcode')->unique()->nullable();
-            $table->string('image')->nullable();
+            $table->string('image_url')->nullable();
             $table->boolean('is_active')->default(true);
             $table->date('production_date')->nullable();
             $table->date('expiry_date')->nullable();

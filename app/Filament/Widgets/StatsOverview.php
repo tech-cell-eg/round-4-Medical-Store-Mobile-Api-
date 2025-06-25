@@ -27,6 +27,11 @@ class StatsOverview extends BaseWidget
                 ->description('إجمالي عدد الفئات')
                 ->icon('heroicon-o-tag')
                 ->color('primary'),
+
+            BaseWidget\Stat::make('المكونات', \App\Models\Ingredient::count())
+                ->description('إجمالي عدد المواد الفعالة')
+                ->icon('heroicon-o-beaker')
+                ->color('secondary'),
         ];
     }
 }

@@ -24,6 +24,10 @@ class PackagesRelationManager extends RelationManager
                     ->label('اسم العبوة')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('size')
+                    ->label('حجم العبوة')
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('price')
                     ->label('السعر')
                     ->required()
@@ -41,6 +45,14 @@ class PackagesRelationManager extends RelationManager
                     ->maxValue(100)
                     ->suffix('%')
                     ->default(0),
+                Forms\Components\TextInput::make('sku')
+                    ->label('رمز التخزين (SKU)')
+                    ->maxLength(255)
+                    ->default(fn() => 'SKU-' . strtoupper(uniqid() . substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 4))),
+                Forms\Components\TextInput::make('barcode')
+                    ->label('الباركود')
+                    ->maxLength(255)
+                    ->default(fn() => str_pad(mt_rand(1, 999999999999), 12, '0', STR_PAD_LEFT)),
             ]);
     }
 
@@ -50,6 +62,24 @@ class PackagesRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('اسم العبوة')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('size')
+                    ->label('حجم العبوة')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('sku')
+                    ->label('رمز التخزين (SKU)')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('barcode')
+                    ->label('الباركود')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('size')
+                    ->label('حجم العبوة')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('sku')
+                    ->label('SKU')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('barcode')
+                    ->label('الباركود')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')
                     ->label('السعر')

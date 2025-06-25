@@ -1,5 +1,6 @@
 <x-filament-widgets::widget>
     <x-filament::section>
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="p-4 bg-white rounded-lg shadow dark:bg-gray-800">
                 <div class="flex items-center">
@@ -42,6 +43,7 @@
                     </div>
                 </div>
             </div>
+
 
             <div class="p-4 bg-white rounded-lg shadow dark:bg-gray-800">
                 <div class="flex items-center">

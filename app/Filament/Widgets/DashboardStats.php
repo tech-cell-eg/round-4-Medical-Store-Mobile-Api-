@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\Brand;
 use App\Models\Unit; // إضافة الموديل للوحدات
+use App\Models\Package;
+use Illuminate\Support\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -21,17 +23,17 @@ class DashboardStats extends BaseWidget
                 ->description('إجمالي عدد المستخدمين')
                 ->icon('heroicon-o-user')
                 ->color('success'),
-                
+
             Stat::make('المنتجات', Product::count())
                 ->description('إجمالي عدد المنتجات')
                 ->icon('heroicon-o-shopping-bag')
                 ->color('warning'),
-                
+
             Stat::make('الفئات', Category::count())
                 ->description('إجمالي عدد الفئات')
                 ->icon('heroicon-o-tag')
                 ->color('primary'),
-                
+
             Stat::make('العلامات التجارية', Brand::count())
                 ->description('إجمالي عدد العلامات التجارية')
                 ->icon('heroicon-o-building-storefront')
@@ -41,6 +43,30 @@ class DashboardStats extends BaseWidget
                 ->description('إجمالي عدد الوحدات')
                 ->icon('heroicon-o-cube')
                 ->color('secondary'),
+
+            // المنتجات منخفضة المخزون
+            Stat::make('منتجات منخفضة المخزون', Package::where('quantity', '<', 5)->count())
+                ->description('عدد الحزم/العبوات التي اقتربت من النفاد')
+                ->icon('heroicon-o-exclamation-circle')
+                ->color('danger'),
+
+            // المنتجات منتهية الصلاحية قريبًا
+            Stat::make('منتجات ستنتهي قريبًا', Product::where('expiry_date', '<', Carbon::now()->addDays(30))->count())
+                ->description('منتجات ستنتهي صلاحيتها خلال 30 يومًا')
+                ->icon('heroicon-o-clock')
+                ->color('warning'),
+
+            // إجمالي الحزم
+            Stat::make('إجمالي الحزم', Package::count())
+                ->description('عدد جميع الحزم/العبوات')
+                ->icon('heroicon-o-archive-box')
+                ->color('info'),
+
+            // Placeholder: المنتجات الأكثر مبيعًا (يتطلب جدول مبيعات/طلبات)
+            Stat::make('المنتجات الأكثر مبيعًا', '-')
+                ->description('يتطلب ربط مع جدول الطلبات')
+                ->icon('heroicon-o-fire')
+                ->color('primary'),
         ];
     }
 }
