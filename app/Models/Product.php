@@ -57,10 +57,10 @@ class Product extends Model
      * العلاقة مع العبوات (علاقة واحد - متعدد)
      * One-to-Many relationship with Package
      */
-    public function packages()
-    {
-        return $this->hasMany(Package::class);
-    }
+    // public function packages()
+    // {
+    //     return $this->hasMany(Package::class);
+    // }
 
     /**
      * العلاقة مع المكونات (علاقة متعدد - متعدد)
