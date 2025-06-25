@@ -26,6 +26,8 @@ class UnitController extends Controller
         ]);
     }
 
+
+
     /**
      * إنشاء وحدة أو وحدات قياس جديدة
      *
@@ -41,8 +43,8 @@ class UnitController extends Controller
         // إعداد قواعد التحقق
         $rules = [
             'name' => 'required|string|max:255|unique:units,name',
-            'symbol' => 'required|string|max:50|unique:units,symbol',
-            'description' => 'nullable|string',
+            'short_name' => 'required|string|max:50|unique:units,short_name',
+            'description' => 'nullable|string|max:255',
             'is_active' => 'boolean'
         ];
 

@@ -54,12 +54,17 @@ class ProductResource extends Resource
                             ->required()
                             ->columnSpanFull(),
                         
-                        TextInput::make('price')
-                            ->label('السعر')
+                        TextInput::make('new_price')
+                            ->label('السعر الجديد')
                             ->numeric()
                             ->required()
+                            ->minValue(0),
+                            
+                        TextInput::make('old_price')
+                            ->label('السعر القديم')
+                            ->numeric()
                             ->minValue(0)
-                            ->columnSpanFull(),
+                            ->placeholder('اتركه فارغاً إذا لم يكن هناك سعر قديم'),
                         
                         Select::make('category_id')
                             ->label('الفئة')
@@ -177,9 +182,14 @@ class ProductResource extends Resource
                 TextColumn::make('barcode')
                     ->label('الباركود'),
 
-                TextColumn::make('price')
-                    ->label('السعر')
+                TextColumn::make('new_price')
+                    ->label('السعر الجديد')
                     ->money('EGP'),
+                    
+                TextColumn::make('old_price')
+                    ->label('السعر القديم')
+                    ->money('EGP')
+                    ->placeholder('-'),
 
                 TextColumn::make('ingredients')
                     ->label('المكونات')
@@ -209,7 +219,7 @@ class ProductResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\PackagesRelationManager::make(),
+            // تم إزالة مدير العلاقة مع العبوات بناءً على طلب مالك المنتج
             RelationManagers\IngredientsRelationManager::make(),
             RelationManagers\ReviewsRelationManager::make(),
         ];

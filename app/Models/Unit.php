@@ -12,7 +12,7 @@ class Unit extends Model
     protected $table = 'units';
     protected $fillable = [
         'name',
-        'symbol',
+        'short_name',
         'description',
         'is_active',
     ];

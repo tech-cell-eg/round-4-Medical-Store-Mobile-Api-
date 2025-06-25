@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Package;
 use App\Models\Ingredient;
 use App\Models\Review;
 
@@ -15,7 +14,8 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
-        'price',
+        'new_price',
+        'old_price',
         'production_date',
         'expiry_date',
         'category_id',
@@ -54,14 +54,7 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    /**
-     * العلاقة مع العبوات (علاقة واحد - متعدد)
-     * One-to-Many relationship with Package
-     */
-    public function packages()
-    {
-        return $this->hasMany(Package::class);
-    }
+    // تم إزالة العلاقة مع العبوات بناءً على طلب مالك المنتج
 
     /**
      * العلاقة مع المكونات (علاقة متعدد - متعدد)
