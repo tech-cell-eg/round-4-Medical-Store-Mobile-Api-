@@ -16,6 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
+            // إضافة حقل السعر القديم بناءا على طلب تيم الفرونت
+            $table->decimal('old_price', 10, 2)->nullable()->default(1);
+            //  بناءا على طلب تيم الفرونت إعادة تسمية حقل السعر الحالي إلى السعر الجديد
+            $table->decimal('new_price', 10, 2)->nullable()->default(1);
             $table->integer('quantity')->default(0);
             $table->string('barcode')->unique()->nullable();
             $table->string('image_url')->nullable();
@@ -29,6 +33,8 @@ return new class extends Migration
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            
 
             // Foreign keys
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
