@@ -102,6 +102,12 @@ class UserAuthController extends Controller
 
             $token = $user->createToken('auth_token')->plainTextToken;
 
+            if ($user->profile) {
+                $user->profile->update([
+                    "last_login_at" => now(),
+                ]);
+            }
+
             DB::commit();
 
             return response()->json([
