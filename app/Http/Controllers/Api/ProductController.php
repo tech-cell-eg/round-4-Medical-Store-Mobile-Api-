@@ -208,7 +208,7 @@ class ProductController extends Controller
         $perPage = $request->input('per_page', 15);
 
         // بناء استعلام البحث العادي
-        $query = Product::with(['category', 'brand', 'unit', 'packages']);
+        $query = Product::with(['category', 'brand', 'unit']);
 
         // البحث في الاسم والوصف
         $query->where(function ($q) use ($searchQuery) {
@@ -239,11 +239,11 @@ class ProductController extends Controller
 
         // فلترة حسب السعر
         if ($priceMin = $request->input('price_min')) {
-            $query->where('price', '>=', $priceMin);
+            $query->where('new_price', '>=', $priceMin);
         }
 
         if ($priceMax = $request->input('price_max')) {
-            $query->where('price', '<=', $priceMax);
+            $query->where('new_price', '<=', $priceMax);
         }
 
         // تطبيق الترتيب
