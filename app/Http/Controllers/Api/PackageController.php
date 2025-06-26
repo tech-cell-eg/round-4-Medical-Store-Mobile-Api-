@@ -66,7 +66,7 @@ class PackageController extends Controller
     public function show(string $id)
     {
         $package = Package::with('product')->find($id);
-        
+
         if (!$package) {
             return response()->json([
                 'status' => 'error',
@@ -90,7 +90,7 @@ class PackageController extends Controller
     public function update(Request $request, string $id)
     {
         $package = Package::find($id);
-        
+
         if (!$package) {
             return response()->json([
                 'status' => 'error',
@@ -131,7 +131,7 @@ class PackageController extends Controller
     public function destroy(string $id)
     {
         $package = Package::find($id);
-        
+
         if (!$package) {
             return response()->json([
                 'status' => 'error',

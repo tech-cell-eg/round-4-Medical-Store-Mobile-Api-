@@ -11,10 +11,15 @@ class Category extends Model
 
     protected $fillable = [
         'name',
-        'category_id',
         'description',
+        'slug',
+        'parent_id',
         'image_url',
+        'is_active',
     ];
+
+    public $timestamps = true;
+    public $softDelete = true;
 
     /**
      * الحصول على المنتجات المرتبطة بهذا التصنيف

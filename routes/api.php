@@ -1,11 +1,17 @@
 <?php
 
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\NotificationManagementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\IngredientController;
+use App\Http\Controllers\Api\StockController;
+use App\Http\Controllers\Api\UnitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +23,10 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+
+Route::get('/products/advanced-search', [ProductController::class, "advancedSearch"]);
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -49,8 +59,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('reviews/{review}', [\App\Http\Controllers\Api\ReviewController::class, 'update'])->name('reviews.update');
     Route::delete('reviews/{review}', [\App\Http\Controllers\Api\ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
-
-
 
 
 

@@ -24,13 +24,13 @@ class ProductSeeder extends Seeder
         $vitaminsCategory = Category::where('name', 'Vitamins')->first();
         $digestiveCategory = Category::where('name', 'Digestive Health')->first();
 
-        $tabletUnit = Unit::where('symbol', 'Tab')->first();
-        $capsuleUnit = Unit::where('symbol', 'Cap')->first();
-        $syrupUnit = Unit::where('symbol', 'Syr')->first();
+        $tabletUnit = Unit::where('short_name', 'Tab')->first();
+        $capsuleUnit = Unit::where('short_name', 'Cap')->first();
+        $syrupUnit = Unit::where('short_name', 'Syr')->first();
 
         $gskBrand = Brand::where('name', 'GSK')->first();
         $bayerBrand = Brand::where('name', 'Bayer')->first();
-                $genericBrand = Brand::where('name', 'Generic')->first();
+        $genericBrand = Brand::where('name', 'Generic')->first();
 
         // Get all ingredients
         $ingredients = Ingredient::all();
@@ -70,7 +70,7 @@ class ProductSeeder extends Seeder
         foreach ($products as $productData) {
             // Ensure all required relations are loaded
             if ($productData['category'] && $productData['unit'] && $productData['brand']) {
-                                $product = Product::firstOrCreate(
+                $product = Product::firstOrCreate(
                     ['name' => $productData['name']],
                     [
                         'description' => $productData['description'],

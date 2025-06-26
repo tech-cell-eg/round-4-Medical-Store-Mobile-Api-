@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('packages', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->integer('quantity');
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->string('size'); // حجم العبوة (مثال: 500 pellets, 110 pellets, 300 pellets)
             $table->decimal('price', 8, 2); // سعر العبوة (مثال: Rs.106, Rs.166, Rs.252)
