@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\CategoryCollection;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -15,13 +18,45 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::all();
-        return response()->json([
-            'status' => 'success',
-            'data' => $categories
-        ], Response::HTTP_OK);
+        $perPage = $request->input('per_page', 15);
+        
+        $query = Category::query();
+        
+        // تحميل العلاقات
+        if ($request->has('with_children')) {
+            $query->with('children');
+        }
+        
+        // الحصول على الفئات الرئيسية فقط
+        if ($request->boolean('root_only', false)) {
+            $query->whereNull('parent_id');
+        }
+        
+        // البحث بالاسم
+        if ($search = $request->input('search')) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+        
+        // التصفية حسب الحالة
+        if ($request->has('is_active')) {
+            $query->where('is_active', $request->boolean('is_active'));
+        }
+        
+        // إضافة عدد المنتجات
+        if ($request->boolean('with_products_count', false)) {
+            $query->withCount('products');
+        }
+        
+        // الترتيب
+        $sortBy = $request->input('sort_by', 'name');
+        $sortDir = $request->input('sort_dir', 'asc');
+        $query->orderBy($sortBy, $sortDir);
+        
+        $categories = $query->paginate($perPage);
+        
+        return new CategoryCollection($categories);
     }
 
     /**
@@ -35,9 +70,10 @@ class CategoryController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|unique:categories|max:255',
             'description' => 'nullable|string',
-            'slug' => 'required|string|max:255',
-            'is_active' => 'required|boolean',
-            'parent_id' => 'nullable',
+            'slug' => 'required|string|unique:categories|max:255',
+            'is_active' => 'boolean',
+            'parent_id' => 'nullable|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -47,12 +83,20 @@ class CategoryController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $category = Category::create($request->all());
+        $data = $request->except('image');
+        
+        // معالجة رفع الصورة
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('categories', 'public');
+            $data['image_url'] = $imagePath;
+        }
+
+        $category = Category::create($data);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Category created successfully',
-            'data' => $category
+            'message' => 'تم إنشاء الفئة بنجاح',
+            'data' => new CategoryResource($category)
         ], Response::HTTP_CREATED);
     }
 
@@ -62,12 +106,22 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show(Request $request, Category $category)
     {
-        return response()->json([
-            'status' => 'success',
-            'data' => $category
-        ], Response::HTTP_OK);
+        // تحميل العلاقات حسب الطلب
+        if ($request->boolean('with_children', false)) {
+            $category->load('children');
+        }
+        
+        if ($request->boolean('with_parent', false)) {
+            $category->load('parent');
+        }
+        
+        if ($request->boolean('with_products_count', false)) {
+            $category->loadCount('products');
+        }
+        
+        return new CategoryResource($category);
     }
 
     /**
@@ -82,6 +136,10 @@ class CategoryController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|unique:categories,name,' . $category->id . '|max:255',
             'description' => 'nullable|string',
+            'slug' => 'sometimes|required|string|unique:categories,slug,' . $category->id . '|max:255',
+            'is_active' => 'boolean',
+            'parent_id' => 'nullable|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -91,12 +149,25 @@ class CategoryController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $category->update($request->all());
+        $data = $request->except('image');
+        
+        // معالجة رفع الصورة
+        if ($request->hasFile('image')) {
+            // حذف الصورة القديمة إذا كانت موجودة
+            if ($category->image_url) {
+                Storage::disk('public')->delete($category->image_url);
+            }
+            
+            $imagePath = $request->file('image')->store('categories', 'public');
+            $data['image_url'] = $imagePath;
+        }
+
+        $category->update($data);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Category updated successfully',
-            'data' => $category
+            'message' => 'تم تحديث الفئة بنجاح',
+            'data' => new CategoryResource($category)
         ], Response::HTTP_OK);
     }
 
@@ -108,11 +179,32 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        // التحقق من وجود فئات فرعية
+        if ($category->children()->count() > 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'لا يمكن حذف الفئة لأنها تحتوي على فئات فرعية'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        
+        // التحقق من وجود منتجات مرتبطة
+        if ($category->products()->count() > 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'لا يمكن حذف الفئة لأنها تحتوي على منتجات مرتبطة'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        
+        // حذف الصورة إذا كانت موجودة
+        if ($category->image_url) {
+            Storage::disk('public')->delete($category->image_url);
+        }
+        
         $category->delete();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Category deleted successfully'
+            'message' => 'تم حذف الفئة بنجاح'
         ], Response::HTTP_OK);
     }
 }

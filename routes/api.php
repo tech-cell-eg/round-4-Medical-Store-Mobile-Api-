@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\BrandController;
 use App\Http\Controllers\NotificationManagementController;
 use App\Http\Controllers\Api\UserProfileController as ApiUserProfileController;
 use Illuminate\Http\Request;
@@ -40,7 +41,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('ingredients', \App\Http\Controllers\Api\IngredientController::class);
 
 // مسارات العبوات (Packages)
-Route::apiResource('packages', \App\Http\Controllers\Api\PackageController::class);
+Route::apiResource('brands', \App\Http\Controllers\Api\BrandController::class);
 
 // مسارات المنتجات (Products)
 Route::apiResource('products', \App\Http\Controllers\Api\ProductController::class);
@@ -53,6 +54,9 @@ Route::apiResource('reviews', \App\Http\Controllers\Api\ReviewController::class)
 
 // مسارات التصنيفات (Categories)
 Route::apiResource('categories', \App\Http\Controllers\Api\CategoryController::class);
+
+// مسارات العلامات التجارية (Brands)
+Route::apiResource('brands', \App\Http\Controllers\Api\BrandController::class);
 
 // مسارات وحدات القياس (Units)
 Route::apiResource('units', \App\Http\Controllers\Api\UnitController::class);
@@ -86,6 +90,4 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post("/", "update")->name('profile.update');
         Route::delete("/image", "deleteProfileImage")->name('profile.delete.image');
     });
-});
-
 });
