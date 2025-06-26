@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="80" viewBox="0 0 300 80">
+  <rect width="300" height="80" fill="white" rx="8" ry="8"/>
+  <circle cx="35" cy="40" r="25" fill="#2c3e50"/>
+  <text x="35" y="46" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">MS</text>
+  <text x="120" y="40" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2c3e50" text-anchor="middle">متجر الأدوية الطبية</text>
+  <text x="120" y="60" font-family="Arial, sans-serif" font-size="12" fill="#7f8c8d" text-anchor="middle">Medical Store</text>
+</svg>

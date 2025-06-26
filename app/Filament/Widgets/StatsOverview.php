@@ -48,11 +48,7 @@ class StatsOverview extends BaseWidget
                 ->icon('heroicon-o-clock')
                 ->color('warning'),
 
-            // إجمالي الحزم
-            BaseWidget\Stat::make('إجمالي الحزم', Package::count())
-                ->description('عدد جميع الحزم/العبوات')
-                ->icon('heroicon-o-archive-box')
-                ->color('info'),
+
 
             // Placeholder: المنتجات الأكثر مبيعًا (يتطلب جدول مبيعات/طلبات)
             BaseWidget\Stat::make('المنتجات الأكثر مبيعًا', '-')
