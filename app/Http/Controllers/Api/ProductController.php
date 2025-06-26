@@ -37,7 +37,6 @@ class ProductController extends Controller
             'category',
             'brand',
             'unit',
-            'packages',
             'ingredients',
             'reviews'
         ]);
@@ -82,7 +81,6 @@ class ProductController extends Controller
             'category',
             'brand',
             'unit',
-            'packages',
             'ingredients',
             'reviews'
         ])->find($id);
@@ -105,7 +103,6 @@ class ProductController extends Controller
     {
         $data = $request->validated();
 
-        return $data;
         // معالجة رفع الصورة
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
