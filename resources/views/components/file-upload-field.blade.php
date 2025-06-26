@@ -5,6 +5,7 @@
     'maxSize' => 2048, // بالكيلوبايت
     'required' => false,
     'helpText' => null,
+    'formId' => null,
 ])
 
 <div class="filament-forms-field-wrapper">

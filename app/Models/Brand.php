@@ -12,7 +12,18 @@ class Brand extends Model
     protected $fillable = [
         'name',
         'description',
+        'logo',
     ];
+    
+    /**
+     * الحصول على المسار الكامل للشعار
+     *
+     * @return string|null
+     */
+    public function getLogoUrlAttribute()
+    {
+        return $this->logo ? url('storage/' . $this->logo) : null;
+    }
 
     /**
      * الحصول على المنتجات المرتبطة بهذه العلامة التجارية
