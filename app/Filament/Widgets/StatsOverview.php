@@ -6,7 +6,6 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Brand;
-use App\Models\Package;
 use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
@@ -36,11 +35,7 @@ class StatsOverview extends BaseWidget
                 ->color('secondary'),
 
 
-            // المنتجات منخفضة المخزون
-            BaseWidget\Stat::make('منتجات منخفضة المخزون', Package::where('quantity', '<', 5)->count())
-                ->description('عدد الحزم/العبوات التي اقتربت من النفاد')
-                ->icon('heroicon-o-exclamation-circle')
-                ->color('danger'),
+            // تم إزالة بطاقة المنتجات منخفضة المخزون بسبب إزالة جدول العبوات
 
             // المنتجات منتهية الصلاحية قريبًا
             BaseWidget\Stat::make('منتجات ستنتهي قريبًا', Product::where('expiry_date', '<', Carbon::now()->addDays(30))->count())

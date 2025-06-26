@@ -12,6 +12,7 @@ use Filament\Tables\Table;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 
@@ -37,16 +38,29 @@ class CategoryResource extends Resource
                             ->label('اسم الفئة')
                             ->required()
                             ->maxLength(255),
+                            
+                        Select::make('parent_id')
+                            ->label('الفئة الأب')
+                            ->relationship('parent', 'name')
+                            ->options(Category::whereNull('parent_id')->pluck('name', 'id'))
+                            ->searchable()
+                            ->placeholder('اختر الفئة الأب (اختياري)')
+                            ->helperText('اترك هذا الحقل فارغًا إذا كانت هذه فئة رئيسية'),
 
                         Textarea::make('description')
                             ->label('وصف الفئة')
                             ->maxLength(65535)
                             ->columnSpanFull(),
 
-                        FileUpload::make('image')
+                        FileUpload::make('image_url')
                             ->label('صورة الفئة')
                             ->image()
+                            ->imageEditor()
                             ->directory('categories')
+                            ->disk('public')
+                            ->visibility('public')
+                            ->maxSize(2048)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
                             ->columnSpanFull(),
                     ])->columns(2),
             ]);
@@ -56,7 +70,7 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('image')
+                ImageColumn::make('image_url')
                     ->label('الصورة')
                     ->circular(),
 
@@ -64,19 +78,46 @@ class CategoryResource extends Resource
                     ->label('اسم الفئة')
                     ->searchable()
                     ->sortable(),
+                    
+                TextColumn::make('parent.name')
+                    ->label('الفئة الأب')
+                    ->formatStateUsing(fn ($state) => $state ?: 'فئة رئيسية')
+                    ->searchable(),
 
                 TextColumn::make('description')
                     ->label('الوصف')
                     ->limit(50)
                     ->searchable(),
 
-                TextColumn::make('name')
+                TextColumn::make('products_count')
                     ->label('عدد المنتجات')
-                    ->formatStateUsing(fn(Category $record) => $record->products()->count())
                     ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('parent_id')
+                    ->label('نوع الفئة')
+                    ->options([
+                        '' => 'الكل',
+                        'main' => 'الفئات الرئيسية',
+                        'sub' => 'الفئات الفرعية',
+                    ])
+                    ->query(function ($query, array $data) {
+                        if ($data['value'] === 'main') {
+                            return $query->whereNull('parent_id');
+                        }
+                        
+                        if ($data['value'] === 'sub') {
+                            return $query->whereNotNull('parent_id');
+                        }
+                        
+                        return $query;
+                    }),
+                    
+                Tables\Filters\SelectFilter::make('parent_category')
+                    ->label('الفئة الأب')
+                    ->relationship('parent', 'name')
+                    ->searchable()
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

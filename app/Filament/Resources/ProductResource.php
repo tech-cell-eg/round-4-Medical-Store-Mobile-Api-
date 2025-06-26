@@ -134,10 +134,9 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('image_url')
+                ImageColumn::make('image_url_full')
                     ->label('الصورة')
-                    ->circular()
-                    ->disk('public'),
+                    ->circular(),
                     
                 TextColumn::make('name')
                     ->label('اسم المنتج')
@@ -151,8 +150,8 @@ class ProductResource extends Resource
                     
                 TextColumn::make('brand.name')
                     ->label('العلامة التجارية')
-                    ->searchable()
-                    ->sortable(),
+                    ->formatStateUsing(fn ($state, $record) => $record->brand?->name ?? 'لا يوجد')
+                    ->searchable(),
                     
                 TextColumn::make('production_date')
                     ->label('تاريخ الإنتاج')
@@ -175,13 +174,6 @@ class ProductResource extends Resource
                     ->label('الوحدة')
                     ->searchable(),
 
-                TextColumn::make('quantity')
-                    ->label('الكمية')
-                    ->sortable(),
-
-                TextColumn::make('barcode')
-                    ->label('الباركود'),
-
                 TextColumn::make('new_price')
                     ->label('السعر الجديد')
                     ->money('EGP'),
@@ -189,7 +181,7 @@ class ProductResource extends Resource
                 TextColumn::make('old_price')
                     ->label('السعر القديم')
                     ->money('EGP')
-                    ->placeholder('-'),
+                    ->formatStateUsing(fn($state) => $state ?? '-'),
 
                 TextColumn::make('ingredients')
                     ->label('المكونات')
