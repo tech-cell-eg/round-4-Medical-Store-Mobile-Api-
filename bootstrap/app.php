@@ -7,7 +7,6 @@ use Illuminate\Foundation\Configuration\Middleware;
 return Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-        App\Providers\FilamentServiceProvider::class,
     ])
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
