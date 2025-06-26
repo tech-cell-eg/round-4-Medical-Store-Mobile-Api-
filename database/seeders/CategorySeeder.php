@@ -57,15 +57,6 @@ class CategorySeeder extends Seeder
 
         ];
 
-        // تعطيل القيود الخارجية مؤقتاً
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
-
-        // حذف جميع التصنيفات الموجودة
-        Category::query()->delete();
-
-        // إعادة تفعيل القيود الخارجية
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
-
         // إنشاء التصنيفات الجديدة
         foreach ($categories as $category) {
             // التأكد من وجود slug لكل تصنيف

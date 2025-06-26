@@ -23,6 +23,8 @@ class Product extends Model
         'image_url',
         'is_active',
     ];
+    
+    protected $appends = ['average_rating', 'reviews_count', 'image_url_full'];
     public $timestamps = true;
 
     /**
@@ -100,5 +102,25 @@ class Product extends Model
     public function getReviewsCountAttribute()
     {
         return $this->reviews()->count();
+    }
+    
+    /**
+     * الحصول على رابط الصورة الكامل مع المنفذ
+     * 
+     * @return string|null
+     */
+    public function getImageUrlFullAttribute()
+    {
+        if (!$this->image_url) {
+            return null;
+        }
+        
+        // إذا كان الرابط يبدأ بـ http أو https، نعيده كما هو
+        if (strpos($this->image_url, 'http') === 0) {
+            return $this->image_url;
+        }
+        
+        // وإلا نفترض أنه مسار ملف في التخزين
+        return url(\Illuminate\Support\Facades\Storage::url($this->image_url));
     }
 }
