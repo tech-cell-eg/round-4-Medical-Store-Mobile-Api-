@@ -5,9 +5,9 @@ use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\NotificationManagementController;
+use App\Http\Controllers\Api\UserProfileController as ApiUserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\StockController;
@@ -61,7 +61,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
-
 // Auth Routes
 Route::controller(UserAuthController::class)->prefix("auth")->group(function () {
     Route::post("send-otp", "sendOtp");
@@ -76,5 +75,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch("/{notificationId}/read", "markAsRead");
         Route::patch("/mark-all-read", "markAllAsRead");
         Route::delete("/{notificationId}", "destroy");
+    });
+
+    // User Profile Routes
+    Route::controller(UserProfileController::class)->prefix("profile")->group(function () {
+        Route::get("/", "show")->name('profile.show');
+        Route::post("/", "update")->name('profile.update');
+        Route::delete("/image", "deleteProfileImage")->name('profile.delete.image');
     });
 });

@@ -21,8 +21,6 @@ class CreateUserProfile
     {
         UserProfile::create([
             'user_id' => $event->user->id,
-            'first_name' => 'Unknown',
-            'last_name' => 'Unknown',
         ]);
     }
 }
