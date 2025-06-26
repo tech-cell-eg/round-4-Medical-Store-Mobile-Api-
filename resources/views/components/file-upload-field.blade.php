@@ -60,11 +60,8 @@
             return;
         }
         
-        // عرض اسم الملف
+        // عرض اسم الملف والصورة المصغرة
         const fileName = file.name;
-        const fileLabel = document.createElement('div');
-        fileLabel.className = 'text-sm text-gray-700 mt-2';
-        fileLabel.textContent = `تم اختيار: ${fileName}`;
         
         // إزالة أي عناصر سابقة
         const parent = input.parentElement.parentElement;
@@ -72,7 +69,39 @@
         if (existingLabel) {
             existingLabel.remove();
         }
+        const existingPreview = parent.querySelector('.file-preview');
+        if (existingPreview) {
+            existingPreview.remove();
+        }
         
-        parent.appendChild(fileLabel);
+        // إنشاء عنصر معاينة الصورة
+        const previewContainer = document.createElement('div');
+        previewContainer.className = 'file-preview mt-3 flex flex-col items-center';
+        
+        // إضافة الصورة المصغرة
+        const imgPreview = document.createElement('div');
+        imgPreview.className = 'w-32 h-32 border border-gray-300 rounded-lg overflow-hidden';
+        
+        const img = document.createElement('img');
+        img.className = 'w-full h-full object-cover';
+        img.alt = 'معاينة الصورة';
+        
+        // قراءة الملف كـ URL للصورة
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        
+        imgPreview.appendChild(img);
+        previewContainer.appendChild(imgPreview);
+        
+        // إضافة اسم الملف
+        const fileLabel = document.createElement('div');
+        fileLabel.className = 'text-sm text-gray-700 mt-2';
+        fileLabel.textContent = `تم اختيار: ${fileName}`;
+        previewContainer.appendChild(fileLabel);
+        
+        parent.appendChild(previewContainer);
     }
 </script>

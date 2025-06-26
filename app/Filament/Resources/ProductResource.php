@@ -96,7 +96,7 @@ class ProductResource extends Resource
                         ViewField::make('current_image')
                             ->label('الصورة الحالية')
                             ->view('components.current-logo', [
-                                'url' => fn ($record) => $record && $record->image_url ? url('storage/' . $record->image_url) : null,
+                                'url' => fn ($record) => $record && $record->image_url ? $record->image_url_full : null,
                                 'filename' => fn ($record) => $record && $record->image_url ? basename($record->image_url) : null,
                             ])
                             ->visible(fn ($record) => $record && $record->image_url)
