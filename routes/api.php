@@ -8,6 +8,9 @@ use App\Http\Controllers\NotificationManagementController;
 use App\Http\Controllers\Api\UserProfileController as ApiUserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+// use App\Http\Controllers\Api\ProductController;
+
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\StockController;
@@ -83,4 +86,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post("/", "update")->name('profile.update');
         Route::delete("/image", "deleteProfileImage")->name('profile.delete.image');
     });
+});
+
 });
