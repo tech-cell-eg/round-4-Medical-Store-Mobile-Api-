@@ -83,7 +83,7 @@ class CartController extends Controller
     public function checkout(Request $request)
     {
         $request->validate([
-            'address' => 'required|string',
+            'address_id' => 'required',
             'payment_method' => 'required|in:cash_on_delivery,paypal'
         ]);
 
