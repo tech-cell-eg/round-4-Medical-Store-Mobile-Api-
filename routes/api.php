@@ -1,21 +1,22 @@
 <?php
 
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\UserAuthController;
-use App\Http\Controllers\UserProfileController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\BrandController;
-use App\Http\Controllers\NotificationManagementController;
-use App\Http\Controllers\Api\UserProfileController as ApiUserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\UnitController;
+use App\Http\Controllers\UserAuthController;
+use App\Http\Controllers\Api\StockController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\ProductController;
 
 // use App\Http\Controllers\Api\ProductController;
 
-use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Api\IngredientController;
-use App\Http\Controllers\Api\StockController;
-use App\Http\Controllers\Api\UnitController;
+use App\Http\Controllers\NotificationManagementController;
+use App\Http\Controllers\Api\UserProfileController as ApiUserProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,5 +90,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get("/", "show")->name('profile.show');
         Route::post("/", "update")->name('profile.update');
         Route::delete("/image", "deleteProfileImage")->name('profile.delete.image');
+    });
+
+    Route::prefix('cart')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('cart.index');
+        Route::post('/add/{id}', [CartController::class, 'add'])->name('cart.add');
+        Route::post('/update/{id}', [CartController::class, 'update'])->name('cart.update');
+        Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+        Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+        Route::post('/success', [CartController::class, 'success'])->name('cart.success');
     });
 });

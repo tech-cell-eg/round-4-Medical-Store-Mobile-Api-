@@ -15,11 +15,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminSeeder::class,
             UsersTableSeeder::class,
+            IngredientSeeder::class, // إضافة IngredientSeeder
             CategorySeeder::class,
             UnitsTableSeeder::class,
             BrandSeeder::class, // Added BrandSeeder
-            IngredientSeeder::class, // إضافة IngredientSeeder
-            ProductsTableSeeder::class,
+            
+            // ProductsTableSeeder::class,
             PackageSeeder::class,
             ReviewsTableSeeder::class,
         ]);

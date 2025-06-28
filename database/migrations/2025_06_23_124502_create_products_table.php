@@ -35,13 +35,6 @@ return new class extends Migration
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
-
-            // Foreign keys
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
-            $table->foreign('brand_id')->references('id')->on('brands')->onDelete('set null');
-            $table->foreign('unit_id')->references('id')->on('units')->onDelete('set null');
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 
@@ -51,7 +44,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropForeign(['category_id']);
+            
             $table->dropForeign(['brand_id']);
             $table->dropForeign(['unit_id']);
             $table->dropForeign(['created_by']);

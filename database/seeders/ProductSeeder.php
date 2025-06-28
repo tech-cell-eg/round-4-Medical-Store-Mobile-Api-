@@ -10,14 +10,17 @@ use App\Models\Unit;
 use App\Models\Brand;
 use App\Models\Ingredient;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
+        // Clear existing ingredient_product relationships
+        DB::table('ingredient_product')->delete();
+        // Clear existing products
+        Product::query()->delete();
+
         // Get Categories, Units, and Brands
         $painkillerCategory = Category::where('name', 'Painkillers')->first();
         $antibioticsCategory = Category::where('name', 'Antibiotics')->first();
@@ -68,9 +71,8 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $productData) {
-            // Ensure all required relations are loaded
             if ($productData['category'] && $productData['unit'] && $productData['brand']) {
-                $product = Product::firstOrCreate(
+                $product = Product::updateOrCreate(
                     ['name' => $productData['name']],
                     [
                         'description' => $productData['description'],
@@ -84,9 +86,9 @@ class ProductSeeder extends Seeder
                     ]
                 );
 
-                // Attach random ingredients to the product
+                // Attach random ingredients
                 if ($ingredients->count() > 0) {
-                    $product->ingredients()->attach(
+                    $product->ingredients()->sync(
                         $ingredients->random(rand(1, min(3, $ingredients->count())))->pluck('id')->toArray()
                     );
                 }
