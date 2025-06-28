@@ -8,10 +8,11 @@ use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\Api\StockController;
 use App\Http\Controllers\Api\ReviewController;
-use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\AddressController;
 
 // use App\Http\Controllers\Api\ProductController;
 
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Api\IngredientController;
@@ -94,10 +95,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('cart')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('cart.index');
-        Route::post('/add', [CartController::class, 'add'])->name('cart.add');
-        Route::post('/update/{id}', [CartController::class, 'update'])->name('cart.update');
-        Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-        Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-        Route::post('/success', [CartController::class, 'success'])->name('cart.success');
+    Route::post('/add', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/update/{id}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+    Route::post('/success', [CartController::class, 'success'])->name('cart.success');
     });
+
+    Route::apiResource('addresses', AddressController::class);
+    Route::post('/addresses/set-default/{id}', [AddressController::class, 'setDefault'])->name('addresses.setDefault');
+    
 });
