@@ -94,7 +94,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('cart')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('cart.index');
-        Route::post('/add/{id}', [CartController::class, 'add'])->name('cart.add');
+        Route::post('/add', [CartController::class, 'add'])->name('cart.add');
         Route::post('/update/{id}', [CartController::class, 'update'])->name('cart.update');
         Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
         Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');

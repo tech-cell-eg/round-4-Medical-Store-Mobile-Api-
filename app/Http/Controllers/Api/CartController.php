@@ -21,7 +21,12 @@ class CartController extends Controller
 
     public function add(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1'
+        ]);
+
+        $product = Product::findOrFail($request->product_id);
         $cart = session()->get('cart', []);
 
         if (isset($cart[$id])) {
