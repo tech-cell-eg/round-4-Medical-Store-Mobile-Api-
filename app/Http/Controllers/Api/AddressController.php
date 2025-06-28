@@ -44,7 +44,12 @@ class AddressController extends Controller
         ]);
 
         $address = Address::findOrFail($id);
-        $address->update($request->validated());
+        $address->update([
+            'title' => $request->title,
+            'address_line1' => $request->addressLine1,
+            'address_line2' => $request->addressLine2,
+            'is_default' => $request->is_default,
+        ]);
         return response()->json($address);
     }
 
