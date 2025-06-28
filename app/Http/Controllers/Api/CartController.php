@@ -3,21 +3,32 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
+    // Assume user authentication (e.g., via token); use a placeholder user_id for now
+    private function getCart()
+    {
+        $userId = Auth::id(); // Replace with authenticated user ID (e.g., auth()->id())
+        return Cart::firstOrCreate(['user_id' => $userId]);
+    }
+
     public function index()
     {
-        $cart = session()->get('cart', []);
-        Log::info('Cart session data: ', ['cart' => $cart]); // Log cart content
-        $total = array_sum(array_map(fn($item) => $item['price'] * $item['quantity'], $cart));
+        $cart = $this->getCart();
+        $items = $cart->items;
+        $total = $items->sum(fn($item) => $item->price * $item->quantity);
+
         return response()->json([
-            'cart' => $cart,
+            'cart' => $items->map->only(['id', 'product_id', 'quantity', 'price', 'image']),
             'total' => $total,
-            'items_count' => count($cart)
+            'items_count' => $items->count()
         ]);
     }
 
@@ -29,46 +40,44 @@ class CartController extends Controller
         ]);
 
         $product = Product::findOrFail($request->product_id);
-        $cart = session()->get('cart', []);
+        $cart = $this->getCart();
 
-        if (isset($cart[$request->product_id])) {
-            $cart[$request->product_id]['quantity'] += $request->quantity;
+        $cartItem = $cart->items()->where('product_id', $request->product_id)->first();
+        if ($cartItem) {
+            $cartItem->quantity += $request->quantity;
+            $cartItem->save();
         } else {
-            $cart[$request->product_id] = [
-                'name' => $product->name,
-                'price' => $product->price ?? 0.00, // Fallback if price is null
+            $cart->items()->create([
+                'product_id' => $request->product_id,
                 'quantity' => $request->quantity,
-                'image' => $product->image_url ?? 'default.jpg', // Fallback if image_url is null
-            ];
+                'price' => $product->price ?? 0.00,
+                'image' => $product->image_url ?? 'default.jpg',
+            ]);
         }
 
-        session()->put('cart', $cart);
-        Log::info('Cart after add: ', ['cart' => $cart]); // Log after adding
-        return response()->json(['message' => 'Product added to cart', 'cart' => $cart]);
+        $items = $cart->items;
+        return response()->json(['message' => 'Product added to cart', 'cart' => $items->map->only(['id', 'product_id', 'quantity', 'price', 'image'])]);
     }
 
     public function update(Request $request, $id)
     {
         $request->validate(['quantity' => 'required|integer|min:1']);
-        $cart = session()->get('cart');
+        $cartItem = CartItem::findOrFail($id);
 
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity'] = $request->quantity;
-            session()->put('cart', $cart);
-        }
+        $cartItem->quantity = $request->quantity;
+        $cartItem->save();
 
-        return response()->json(['message' => 'Cart updated', 'cart' => $cart]);
+        $cart = $this->getCart();
+        return response()->json(['message' => 'Cart updated', 'cart' => $cart->items->map->only(['id', 'product_id', 'quantity', 'price', 'image'])]);
     }
 
     public function remove($id)
     {
-        $cart = session()->get('cart');
-        if (isset($cart[$id])) {
-            unset($cart[$id]);
-            session()->put('cart', $cart);
-        }
+        $cartItem = CartItem::findOrFail($id);
+        $cartItem->delete();
 
-        return response()->json(['message' => 'Product removed from cart', 'cart' => $cart]);
+        $cart = $this->getCart();
+        return response()->json(['message' => 'Product removed from cart', 'cart' => $cart->items->map->only(['id', 'product_id', 'quantity', 'price', 'image'])]);
     }
 
     public function checkout(Request $request)
@@ -78,14 +87,15 @@ class CartController extends Controller
             'payment_method' => 'required|in:cash_on_delivery,paypal'
         ]);
 
-        $cart = session()->get('cart', []);
-        $total = array_sum(array_map(fn($item) => $item['price'] * $item['quantity'], $cart));
+        $cart = $this->getCart();
+        $items = $cart->items;
+        $total = $items->sum(fn($item) => $item->price * $item->quantity);
         $subtotal = $total + 28.80;
         $discount = 28.80 + 15.00;
         $finalTotal = $total;
 
         return response()->json([
-            'cart' => $cart,
+            'cart' => $items->map->only(['id', 'product_id', 'quantity', 'price', 'image']),
             'subtotal' => $subtotal,
             'discount' => $discount,
             'total' => $finalTotal,
@@ -97,8 +107,10 @@ class CartController extends Controller
 
     public function success(Request $request)
     {
+        $cart = $this->getCart();
+        $cart->items()->delete(); // Clear cart items
         $orderId = '9d56' . rand(1000, 9999);
-        session()->forget('cart');
+
         return response()->json([
             'order_id' => $orderId,
             'tracking_info' => 'Track the delivery in the order section'
