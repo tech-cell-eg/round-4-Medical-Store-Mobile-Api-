@@ -29,10 +29,10 @@ class CartController extends Controller
         $product = Product::findOrFail($request->product_id);
         $cart = session()->get('cart', []);
 
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity']++;
+        if (isset($cart[$request->product_id])) {
+            $cart[$request->product_id]['quantity']++;
         } else {
-            $cart[$id] = [
+            $cart[$request->product_id] = [
                 'name' => $product->name,
                 'price' => $product->price,
                 'quantity' => 1,
