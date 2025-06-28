@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
     public function index()
     {
         $cart = session()->get('cart', []);
+        Log::info('Cart session data: ', ['cart' => $cart]); // Log cart content
         $total = array_sum(array_map(fn($item) => $item['price'] * $item['quantity'], $cart));
         return response()->json([
             'cart' => $cart,
@@ -30,17 +32,18 @@ class CartController extends Controller
         $cart = session()->get('cart', []);
 
         if (isset($cart[$request->product_id])) {
-            $cart[$request->product_id]['quantity']++;
+            $cart[$request->product_id]['quantity'] += $request->quantity;
         } else {
             $cart[$request->product_id] = [
                 'name' => $product->name,
-                'price' => $product->price,
+                'price' => $product->price ?? 0.00, // Fallback if price is null
                 'quantity' => $request->quantity,
-                'image' => $product->image_url,
+                'image' => $product->image_url ?? 'default.jpg', // Fallback if image_url is null
             ];
         }
 
         session()->put('cart', $cart);
+        Log::info('Cart after add: ', ['cart' => $cart]); // Log after adding
         return response()->json(['message' => 'Product added to cart', 'cart' => $cart]);
     }
 
@@ -77,8 +80,8 @@ class CartController extends Controller
 
         $cart = session()->get('cart', []);
         $total = array_sum(array_map(fn($item) => $item['price'] * $item['quantity'], $cart));
-        $subtotal = $total + 28.80; // Example order total with items discount
-        $discount = 28.80 + 15.00; // Items discount + coupon
+        $subtotal = $total + 28.80;
+        $discount = 28.80 + 15.00;
         $finalTotal = $total;
 
         return response()->json([
